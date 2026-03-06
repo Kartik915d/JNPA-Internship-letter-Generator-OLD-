@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JNPA Internship Application Form</title>
+
+    <!-- Viewport for mobile responsiveness -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/Fjnpa_logo.png') }}">
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+/* GLOBAL RESET / MOBILE SAFETY */
+* {
+    box-sizing: border-box;
+}
+html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+}
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* MAIN HEADER LAYOUT */
+.jnpa-header {
+    width: 100%;
+    background-image: url('{{ url_for("static", filename="img/Head.png") }}');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding: 18px 22px;
+    color: white;
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+/* LEFT SIDE (Logo + Titles) */
+.jnpa-header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+/* JNPA LOGO – FULL PNG DISPLAY */
+.jnpa-logo {
+    height: 70px;
+    width: auto;
+    object-fit: contain;
+}
+
+/* TITLE TEXT */
+.jnpa-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0;
+}
+.jnpa-sub {
+    font-size: 13px;
+    opacity: 0.9;
+}
+
+/* ADMIN LOGIN BUTTON */
+.admin-login-btn {
+    background: #0077b6;
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 6px;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+/* FORM CARD */
+.form-card {
+    max-width: 700px;
+    margin: 40px auto;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 0 12px rgba(0,0,0,0.1);
+}
+
+/* ---------------------------- */
+/* RESPONSIVE DESIGN */
+/* ---------------------------- */
+
+@media (max-width: 992px) {
+    .form-card {
+        margin: 24px auto;
+        padding: 20px;
+        max-width: 90%;
+    }
+}
+
+@media (max-width: 768px) {
+    .jnpa-header {
+        flex-direction: column;
+        text-align: center;
+        padding: 14px 10px;
+    }
+
+    .jnpa-header-left {
+        flex-direction: column;
+        gap: 6px;
+        text-align: center;
+    }
+
+    .jnpa-title {
+        font-size: 18px;
+    }
+
+    .jnpa-logo {
+        height: 60px;
+    }
+
+    .admin-login-btn {
+        margin-top: 8px;
+        width: 100%;
+        max-width: 220px;
+        text-align: center;
+    }
+
+    .form-card {
+        max-width: 95%;
+        padding: 18px;
+        margin: 20px auto;
+    }
+
+    h3 {
+        font-size: 1.25rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .jnpa-title {
+        font-size: 16px;
+    }
+    .jnpa-logo {
+        height: 50px;
+    }
+
+    body {
+        font-size: 15px;
+    }
+
+    .admin-login-btn {
+        padding: 8px 12px;
+        font-size: 0.9rem;
+    }
+}
+
+/* tiny helper for the "Other branch" input */
+#branch_other_input { 
+    display: none; 
+    margin-top: 6px; 
+}
+    </style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header class="jnpa-header">
+
+    <div class="jnpa-header-left">
+        <img src="{{ url_for('static', filename='img/jnpa_logo.png') }}" class="jnpa-logo" alt="JNPA logo">
+
+        <div>
+            <div class="jnpa-title">Jawaharlal Nehru Port Authority (JNPA)</div>
+            <div class="jnpa-sub">Internship Permission Portal</div>
+        </div>
+    </div>
+
+    <a href="{{ url_for('admin_login') }}" class="admin-login-btn">Admin Login</a>
+
+</header>
+
+<!-- MAIN FORM -->
+<div class="container">
+    <div class="form-card bg-white">
+
+        <h3 class="mb-3 text-center">Internship Application Form</h3>
+
+        <!-- FLASHED MESSAGES (filter login-success) -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for cat, msg in messages %}
+                {% if cat != 'login' and not (cat == 'success' and 'Logged in successfully' in msg) %}
+                    <div class="alert alert-{{ 'danger' if cat=='error' else cat }}">{{ msg }}</div>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <form method="POST" action="{{ url_for('submit') }}" enctype="multipart/form-data" novalidate>
+
+            <div class="mb-3">
+                <label class="form-label">Full Name</label>
+                <input type="text" name="full_name" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">College Name</label>
+                <input type="text" name="college_name" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Email Address</label>
+                <input type="email" name="email" class="form-control" required>
+            </div>
+
+            <!-- Student Year & Branch -->
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Student Year</label>
+                    <select id="student_year" name="student_year" class="form-select" required>
+                        <option value="" selected disabled>Choose year</option>
+                        <option value="1st">1st Year</option>
+                        <option value="2nd">2nd Year</option>
+                        <option value="3rd">3rd Year</option>
+                        <option value="4th">4th Year</option>
+                    </select>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Branch</label>
+                    <select id="branch_select" name="branch" class="form-select" required>
+                        <option value="" selected disabled>Choose branch</option>
+                        <option value="Computer">Computer</option>
+                        <option value="Information Technology">Information Technology</option>
+                        <option value="Electronics">Electronics</option>
+                        <option value="Mechanical">Mechanical</option>
+                        <option value="Civil">Civil</option>
+                        <option value="Electrical">Electrical</option>
+                        <option value="Other">Other</option>
+                    </select>
+
+                    <!-- appears when "Other" selected -->
+                    <input id="branch_other_input" type="text" name="other_branch" class="form-control"
+                           placeholder="Enter branch name (e.g., Biotechnology)">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Internship Start Date</label>
+                    <input type="date" name="start_date" class="form-control" required>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Internship End Date</label>
+                    <input type="date" name="end_date" class="form-control" required>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Duration</label>
+                <input type="text" name="duration" class="form-control" placeholder="Example: 3 Months" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Upload College Permission Letter (PDF Only)</label>
+                <input type="file" name="permission_letter" class="form-control" accept="application/pdf" required>
+            </div>
+
+            <!-- Submission Date (auto-filled) -->
+            <div class="mb-3">
+                <label class="form-label">Submission Date</label>
+                <input type="text" id="submission_date_view" class="form-control" readonly>
+                <input type="hidden" id="submission_date" name="submission_date" value="">
+            </div>
+
+            <button class="btn btn-primary w-100" 
+                    style="background: #0077b6; border:none; padding:12px; font-size:16px;">
+                Submit Application
+            </button>
+
+        </form>
+    </div>
+</div>
+
+<!-- JS to auto-fill submission date and handle 'Other' branch -->
+<script>
+(function() {
+    // fill submission date (timezone-correct YYYY-MM-DD and friendly display)
+    const now = new Date();
+    const tzOffset = now.getTimezoneOffset() * 60000;
+    const localISOTime = (new Date(now - tzOffset)).toISOString().slice(0,10); // YYYY-MM-DD
+
+    const options = { year: 'numeric', month: 'short', day: '2-digit' };
+    const friendly = now.toLocaleDateString(undefined, options);
+
+    const view = document.getElementById('submission_date_view');
+    const hidden = document.getElementById('submission_date');
+    if (view) view.value = friendly;
+    if (hidden) hidden.value = localISOTime;
+
+    // branch "Other" reveal logic
+    const branchSelect = document.getElementById('branch_select');
+    const otherInput = document.getElementById('branch_other_input');
+    function toggleOther() {
+        if (!branchSelect || !otherInput) return;
+        if (branchSelect.value === 'Other') {
+            otherInput.style.display = 'block';
+            otherInput.required = true;
+        } else {
+            otherInput.style.display = 'none';
+            otherInput.required = false;
+            otherInput.value = '';
+        }
+    }
+    if (branchSelect) {
+        branchSelect.addEventListener('change', toggleOther);
+        toggleOther();
+    }
+
+    // Optional: basic client-side validation for start <= end
+    const form = document.querySelector('form[action="{{ url_for("submit") }}"]');
+    if (form) {
+        form.addEventListener('submit', function (e) {
+            const start = form.querySelector('input[name="start_date"]').value;
+            const end = form.querySelector('input[name="end_date"]').value;
+            if (start && end && start > end) {
+                e.preventDefault();
+                alert('Error: Internship start date must be before or equal to end date.');
+                return false;
+            }
+            if (branchSelect && branchSelect.value === 'Other') {
+                if (!otherInput.value.trim()) {
+                    e.preventDefault();
+                    alert('Please enter your branch name in the "Other" field.');
+                    return false;
+                }
+            }
+            return true;
+        });
+    }
+})();
+</script>
+
+</body>
+</html>

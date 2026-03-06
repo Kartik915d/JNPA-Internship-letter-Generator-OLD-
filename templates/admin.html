@@ -1,0 +1,485 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Internship Applications — Admin</title>
+
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/Fjnpa_logo.png') }}">
+
+  <style>
+/* MAIN HEADER LAYOUT */
+.jnpa-header {
+    width: 100%;
+    background-image: url('{{ url_for("static", filename="img/Head.png") }}');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding: 18px 22px;
+    color: white;
+    display: flex;
+    justify-content: space-evenly; 
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+/* LEFT SIDE (Logo + Titles) */
+.jnpa-header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+/* LOGO */
+.jnpa-logo {
+    height: 70px;
+    width: auto;
+    object-fit: contain;
+}
+
+/* TITLES */
+.jnpa-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0;
+}
+.jnpa-sub {
+    font-size: 13px;
+    opacity: 0.9;
+}
+
+/* Logout Button */
+.admin-login-btn {
+    background: #0077b6;
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 6px;
+    text-decoration: none;
+    white-space: nowrap;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: background 0.3s ease;
+}
+
+.admin-login-btn:hover {
+    background: #005a8a;
+}
+
+/* TABLE + PAGE STYLING */
+* { box-sizing: border-box; }
+body { 
+    font-family: Arial, sans-serif; 
+    background: #f7f7f7; 
+    margin: 0; 
+    padding: 0; 
+}
+
+.container {
+    max-width: 1100px;
+    margin: 20px auto;
+    padding: 0 10px;
+}
+
+/* Flash messages */
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 20px 0;
+}
+
+ul li {
+    padding: 12px;
+    margin-bottom: 10px;
+    background: #d4edda;
+    border: 1px solid #c3e6cb;
+    border-radius: 6px;
+    color: #155724;
+}
+
+/* DESKTOP TABLE STYLING */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    margin-bottom: 20px;
+}
+
+th, td {
+    padding: 12px 10px;
+    border-bottom: 1px solid #eee;
+    text-align: left;
+}
+
+th { 
+    background: #fafafa; 
+    font-weight: 600;
+    font-size: 14px;
+}
+
+td {
+    font-size: 14px;
+}
+
+.action-btn {
+    padding: 8px 12px;
+    border-radius: 6px;
+    text-decoration: none;
+    display: inline-block;
+    border: 1px solid #0077b6;
+    color: #fff;
+    background: #0077b6;
+    margin-right: 6px;
+    margin-bottom: 4px;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.action-btn:hover {
+    background: #005a8a;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.action-btn.secondary {
+    background: #fff;
+    color: #0077b6;
+    border: 1px solid #0077b6;
+}
+
+.action-btn.secondary:hover {
+    background: #e8f4f8;
+}
+
+.nowrap { white-space: nowrap; }
+
+.status {
+    padding: 6px 8px;
+    border-radius: 6px;
+    display: inline-block;
+    font-size: 0.9rem;
+    text-transform: capitalize;
+}
+
+.status.pending { 
+    background: #fff3cd; 
+    color: #856404; 
+    border: 1px solid #ffeeba; 
+}
+
+.status.approved { 
+    background: #d4edda; 
+    color: #155724; 
+    border: 1px solid #c3e6cb; 
+}
+
+.status.rejected { 
+    background: #f8d7da; 
+    color: #721c24; 
+    border: 1px solid #f5c6cb; 
+}
+
+/* ========== MOBILE RESPONSIVE DESIGN ========== */
+
+/* Tablets (769px - 1024px) */
+@media (max-width: 1024px) {
+    .jnpa-title {
+        font-size: 20px;
+    }
+    
+    .action-btn {
+        padding: 6px 10px;
+        font-size: 12px;
+    }
+}
+
+/* Large Mobile/Small Tablet (769px) */
+@media (max-width: 768px) {
+    .jnpa-header {
+        flex-direction: column;
+        text-align: center;
+        padding: 14px 10px;
+        gap: 10px;
+    }
+
+    .jnpa-header-left {
+        flex-direction: column;
+        gap: 6px;
+        width: 100%;
+    }
+
+    .jnpa-title {
+        font-size: 18px;
+    }
+
+    .jnpa-sub {
+        font-size: 12px;
+    }
+
+    .jnpa-logo {
+        height: 60px;
+    }
+
+    .admin-login-btn {
+        width: 100%;
+        max-width: 220px;
+        text-align: center;
+        padding: 10px 16px;
+    }
+
+    .container {
+        margin: 15px auto;
+        padding: 0 10px;
+    }
+
+    /* CARD LAYOUT FOR MOBILE */
+    table, thead, tbody, th, td, tr {
+        display: block;
+        width: 100%;
+    }
+
+    thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+
+    tr {
+        margin-bottom: 20px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background: #fff;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+
+    td {
+        border: none;
+        padding: 10px;
+        text-align: right;
+        position: relative;
+        padding-left: 50%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        min-height: 40px;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    td:last-child {
+        border-bottom: none;
+    }
+
+    td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 10px;
+        font-weight: 600;
+        color: #333;
+        text-align: left;
+        width: auto;
+        min-width: 40%;
+    }
+
+    /* Hide # column on mobile */
+    td:first-child::before {
+        content: "";
+    }
+    
+    td:first-child {
+        padding-left: 10px;
+        padding-right: 10px;
+        font-size: 12px;
+        color: #999;
+    }
+
+    /* Action buttons in card layout */
+    td:last-child {
+        flex-direction: column;
+        align-items: stretch;
+        /* padding: 12px; */
+    }
+
+    td:last-child::before {
+        content: "Actions";
+        /* width: 100%; */
+        margin-bottom: 10px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .action-btn {
+        display: block;
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 8px;
+        padding: 10px 12px;
+        text-align: center;
+        font-size: 13px;
+    }
+
+    .action-btn:last-child {
+        margin-bottom: 0;
+    }
+}
+
+/* Small Mobile (480px) */
+@media (max-width: 480px) {
+    .jnpa-title {
+        font-size: 16px;
+    }
+
+    .jnpa-sub {
+        font-size: 11px;
+    }
+
+    .jnpa-logo {
+        height: 50px;
+    }
+
+    .container {
+        margin: 10px auto;
+        padding: 0 8px;
+    }
+
+    td {
+        padding: 8px;
+        padding-left: 45%;
+        font-size: 13px;
+    }
+
+    td::before {
+        font-size: 12px;
+    }
+
+    .action-btn {
+        padding: 8px 10px;
+        font-size: 12px;
+    }
+
+    .status {
+        font-size: 0.85rem;
+        padding: 4px 6px;
+    }
+}
+
+/* Extra Small Mobile (360px) */
+@media (max-width: 360px) {
+    .jnpa-title {
+        font-size: 14px;
+    }
+
+    .admin-login-btn {
+        padding: 8px 12px;
+        font-size: 12px;
+    }
+
+    td {
+        padding: 8px;
+        padding-left: 50%;
+        font-size: 12px;
+    }
+
+    .action-btn {
+        padding: 6px 8px;
+        font-size: 11px;
+    }
+}
+
+  </style>
+</head>
+
+<body>
+
+<!-- 🔥 IDENTICAL HEADER FROM form.html (Modified for Admin Dashboard) -->
+<header class="jnpa-header">
+
+    <div class="jnpa-header-left">
+        <img src="{{ url_for('static', filename='img/jnpa_logo.png') }}" class="jnpa-logo" alt="JNPA logo">
+
+        <div>
+            <div class="jnpa-title">Jawaharlal Nehru Port Authority (JNPA)</div>
+            <div class="jnpa-sub">JNPA Internship Portal — Admin Dashboard</div>
+        </div>
+    </div>
+
+    <a href="{{ url_for('admin_logout') }}" class="admin-login-btn">Logout</a>
+
+</header>
+
+<div class="container">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul>
+          {% for cat, msg in messages %}
+            <li><strong>{{ cat }}:</strong> {{ msg }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Student</th>
+          <th>College</th>
+          <th>Submitted</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {%- for r in requests %}
+        {% set st = (r.status or '').lower() %}
+
+        <tr>
+          <td data-label="#">{{ loop.index }}</td>
+          <td data-label="Student">{{ r.student_name }}</td>
+          <td data-label="College">{{ r.college_name }}</td>
+          <td data-label="Submitted" class="nowrap">{{ r.submission_date }}</td>
+
+          <td data-label="Status">
+            <span class="status {{ st }}">{{ st }}</span>
+          </td>
+
+          <td data-label="Actions">
+
+            <!-- View -->
+            <a class="action-btn" href="{{ url_for('admin_view', req_id=r.doc_ref_id) }}">View</a>
+
+            <!-- Permission PDF -->
+            {% if r.permission_path %}
+              <a class="action-btn secondary" target="_blank"
+                 href="{{ url_for('uploaded_file', filename=r.permission_path) }}">
+                 Permission PDF
+              </a>
+            {% endif %}
+
+            <!-- Download Letter (ONLY WHEN APPROVED) -->
+            {% if st == 'approved' %}
+              <a class="action-btn"
+                 href="{{ url_for('download_letter', req_id=r.doc_ref_id) }}">
+                 Download Letter
+              </a>
+            {% endif %}
+
+          </td>
+        </tr>
+
+        {%- else %}
+        <tr><td colspan="6">No applications found.</td></tr>
+        {%- endfor %}
+      </tbody>
+    </table>
+
+</div>
+
+</body>
+</html>
