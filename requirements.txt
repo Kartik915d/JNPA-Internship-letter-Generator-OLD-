@@ -1,0 +1,5 @@
+Flask>=2.2
+pdfkit>=1.0.0
+python-dotenv>=1.0.0
+Werkzeug>=2.2
+firebase-admin

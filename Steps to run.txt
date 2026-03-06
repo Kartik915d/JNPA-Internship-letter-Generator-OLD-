@@ -1,0 +1,13 @@
+Steps to run - 5 steps (Internship Portal)
+
+
+
+cd C:\Users\karti\Downloads\internship_portal_fixed
+
+.\venv\Scripts\activate
+
+$env:FIREBASE_CREDENTIALS="C:\Users\karti\Downloads\internship_portal_fixed\internship-portal-a37d4-firebase-adminsdk-fbsvc-2825b1b4ce.json"
+
+echo $env:FIREBASE_CREDENTIALS
+
+python app.py
